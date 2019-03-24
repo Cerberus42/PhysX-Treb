@@ -237,22 +237,22 @@ namespace VisualDebugger
 		{
 			// Force controls on the selected actor
 		case 'I': //forward
-			scene->GetSelectedActor()->addForce(PxVec3(0,0,-1)*gForceStrength);
+			scene->GetSelectedActor()->addForce(PxVec3(0,0,-5)*gForceStrength);
 			break;
 		case 'K': //backward
-			scene->GetSelectedActor()->addForce(PxVec3(0,0,1)*gForceStrength);
+			scene->GetSelectedActor()->addForce(PxVec3(0,0,11)*gForceStrength);
 			break;
 		case 'J': //left
-			scene->GetSelectedActor()->addForce(PxVec3(-1,0,0)*gForceStrength);
+			scene->GetSelectedActor()->addForce(PxVec3(-11,0,0)*gForceStrength);
 			break;
 		case 'L': //right
-			scene->GetSelectedActor()->addForce(PxVec3(1,0,0)*gForceStrength);
+			scene->GetSelectedActor()->addForce(PxVec3(11,0,0)*gForceStrength);
 			break;
 		case 'U': //up
-			scene->GetSelectedActor()->addForce(PxVec3(0,1,0)*gForceStrength);
+			scene->GetSelectedActor()->addForce(PxVec3(0,11,0)*gForceStrength);
 			break;
 		case 'M': //down
-			scene->GetSelectedActor()->addForce(PxVec3(0,-1,0)*gForceStrength);
+			scene->GetSelectedActor()->addForce(PxVec3(0,-11,0)*gForceStrength);
 			break;
 		default:
 			break;

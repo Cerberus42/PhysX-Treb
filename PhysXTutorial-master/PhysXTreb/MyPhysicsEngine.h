@@ -42,7 +42,11 @@ namespace PhysicsEngine
 		{
 			ACTOR0		= (1 << 0),
 			ACTOR1		= (1 << 1),
-			ACTOR2		= (1 << 2)
+			ACTOR2		= (1 << 2),
+			ACTOR3      = (1 << 3),
+			ACTOR4 = (1 << 4),
+			ACTOR5 = (1 << 5)
+
 			//add more if you need
 		};
 	};
@@ -184,7 +188,10 @@ namespace PhysicsEngine
 		Plane* plane;
 		Box* box, * box2;
 		MySimulationEventCallback* my_callback;
-		Box* post1, post2;
+		Boxx* left, * right, * middle, * upmidri, * upmidle, * armbox1, * armbox2, * armbox3, *bracerright;
+		Box* upright, *upleft, * arm;
+		Sphere* ball;
+		Base* base,* bracerleft;
 		
 	public:
 		//specify your custom filter shader here
@@ -213,45 +220,109 @@ namespace PhysicsEngine
 			plane->Color(PxVec3(210.f/255.f,210.f/255.f,210.f/255.f));
 			Add(plane);
 
+			
+
 			//goal = new Box(PxBoxGeometry(10.f, 0.f, 0.5f));
 
+			/*========================================BALL=================================================*/
 
-			box = new Box(PxTransform(PxVec3(.0f,.5f,.0f)));
-			box->CreateShape(PxBoxGeometry(0.3f, 4.0f, 0.4f), 5);
+			ball = new Sphere(PxTransform(PxVec3(3.f, 4.f, 1.f)));
+			ball->CreateShape(PxSphereGeometry(1), 1);
+			ball->Color(color_palette[5]);
+
+
+			//My code is super ugly and I should of made a class for it lol
+			/*=======================================TREB============================================*/
+			middle = new Boxx(PxTransform(PxVec3(.0f, 1.5f, 2.f), PxQuat(PxPi/2,PxVec3(0.f,1.f,0.f))));
+			left = new Boxx(PxTransform(PxVec3(0.0f, 1.5f, 0.f)));
+			right = new Boxx(PxTransform(PxVec3(0.0f, 1.5f, 4.f)));
+			upright = new Box(PxTransform(PxVec3(.0f, 5.5f, 4.0f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
+			upleft = new Box(PxTransform(PxVec3(0.0f, 5.5f, 0.0f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
+			upmidri = new Boxx(PxTransform(PxVec3(0.0f, 8.5f, 3.0f)));
+			upmidle = new Boxx(PxTransform(PxVec3(0.0f, 8.5f, 1.f)));
+			base = new Base(PxTransform(PxVec3(0.f, 0.f, 0.f)));
+			arm = new Box(PxTransform(PxVec3(3.0f, 8.5f, 2.f), PxQuat(PxPi / 7, PxVec3(0.f, 0.f, 1.f))));
+			armbox1 = new Boxx(PxTransform(PxVec3()));
+			armbox2 = new Boxx(PxTransform(PxVec3()));
+			armbox3 = new Boxx(PxTransform(PxVec3()));
+			bracerleft = new Base(PxTransform(PxVec3(0.f, 2.5f, -1.f), PxQuat(PxPi / 2, PxVec3(0.f,1.f,0.f))));
+			bracerright = new Boxx(PxTransform(PxVec3(0.0f, 1.5f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
+
+
+			base->CreateShape(PxBoxGeometry(5.f, .1, 5.f), 3);
+			middle->CreateShape(PxBoxGeometry(1.5f, .5f, .5f), 3);
+			left->CreateShape(PxBoxGeometry(3.5f, .5f, .5f), 3);
+			right->CreateShape(PxBoxGeometry(3.5f, .5f, .5f), 3);
+			upright->CreateShape(PxBoxGeometry(3.5f, .5f, .5f), 3);
+			upleft->CreateShape(PxBoxGeometry(3.5f, .5f, .5f), 3);
+			upmidri->CreateShape(PxBoxGeometry(.45f, .45f, .5f), 3);
+			upmidle->CreateShape(PxBoxGeometry(.45f, .45f, .5f), 3);
+			arm->CreateShape(PxBoxGeometry(5.5f, .5f, .5f), 1);
+			bracerleft->CreateShape(PxBoxGeometry(.01f, 1.5f, .5f), 6);
+
+
+			right->Color(color_palette[4]);
+			left->Color(color_palette[4]);
+			upright->Color(color_palette[6]);
+			upleft->Color(color_palette[6]);
+			middle->Color(color_palette[4]);
+			arm->Color(color_palette[2]);
+			bracerleft->Color(color_palette[2]);
+			arm->Name("arm");
+
+
+			box = new Box(PxTransform(PxVec3(.0f,10.5f,.0f)));
+			box->CreateShape(PxBoxGeometry(1.f, 4.0f, 1.f), 1);
 			box->Color(color_palette[0]);
 
+
 			//box = PxBoxGeometry(PxVec3(.0f, 0.f, 0.f));
-			//Numbers are as follows First is Left Second is height third is right
-			box2 = new Box(PxTransform(PxVec3(3.0f, 1.5f, .0f)));
+			//Numbers are as follows First is Left Second is height, third is right
+			box2 = new Box(PxTransform(PxVec3(3.0f, 6.5f, .0f)));
 			box2->Color(color_palette[1]);
 
 
 			//set collision filter flags
-			//box->SetupFiltering(FilterGroup::ACTOR0, FilterGroup::ACTOR1);
+			box->SetupFiltering(FilterGroup::ACTOR0, FilterGroup::ACTOR1);
 			//use | operator to combine more actors e.g.
 			box->SetupFiltering(FilterGroup::ACTOR0, FilterGroup::ACTOR1 | FilterGroup::ACTOR2);
 			//don't forget to set your flags for the matching actor as well, e.g.:
-			box2->SetupFiltering(FilterGroup::ACTOR1, FilterGroup::ACTOR0);
-			box->Name("Box1");
-			box2->Name("Box2");
-			Add(box);
-			Add(box2);
+			//box2->SetupFiltering(FilterGroup::ACTOR1, FilterGroup::ACTOR0);
+			//box->Name("Box1");
+			//box2->Name("Box2");
+			//Add(box);
+			//Add(box2);
+			Add(base);
+			Add(middle);
+			Add(left);
+			Add(right);
+			Add(upleft);
+			Add(upright);
+			Add(upmidri);
+			Add(upmidle);
+			Add(arm);
+			//Add(bracerleft);
+			//Add(ball);
 			//Add(post1);
 			//joint two boxes together
 			//the joint is fixed to the centre of the first box, oriented by 90 degrees around the Y axis
-			//and has the second object attached 5 meters away along the Y axis from the first object.
-			//RevoluteJoint joint(box, PxTransform(PxVec3(0.f,0.f,0.f),PxQuat(PxPi/2,PxVec3(0.f,1.f,0.f))), box2, PxTransform(PxVec3(0.f,5.f,0.f)));
-			
+			//FixedJoint leftjoint(upleft, PxTransform(PxVec3(.0f, .0f, .0f)), left, PxTransform(PxVec3(0.f, 0.0f, 0.f)));
+			FixedJoint leftupjoint(upleft, PxTransform(PxVec3(2.0f, 1.0f, 2.0f), PxQuat(PxPi/2,PxVec3(0.f,1.f,0.f))), upmidle, PxTransform(PxVec3(0.f, 0.0f, 0.f)));
+
+			//DistanceJoint leftbracerjoint(upleft, PxTransform(PxVec3(.0f, .0f, .0f)), bracerleft, PxTransform(PxVec3(0.f, 2.5f, 0.5f)));
+			//DistanceJoint leftjointbracer(left, PxTransform(PxVec3(.0f, .0f, .0f)), bracerleft, PxTransform(PxVec3(0.f, -2.5f, 0.5f)));
+
+			//FixedJoint rightjoint(upright, PxTransform(PxVec3(.0f, .0f, .0f)), right, PxTransform(PxVec3(0.f, 0.0f, 0.f)));
+			//FixedJoint rightupoint(upright, PxTransform(PxVec3(.0f, .0f, .0f)), upmidri, PxTransform(PxVec3(0.f, 0.0f, 0.f)));
+
+			RevoluteJoint joint(arm, PxTransform(PxVec3(.0f,0.f,0.f), PxQuat(PxPi/2,PxVec3(1.f,0.0f,0.f))), upmidri, PxTransform(PxVec3(3.5f,0.0f,-1.f)));
+			//joint(upleft, PxTransform(PxVec3(0.f, 0.f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, .0f, 1.f))), upmidri, PxTransform(PxVec3(0.f, .0f, 0.f)));
+
 		}
 
 		//Custom udpate function
 		virtual void CustomUpdate() 
 		{
-		}
-		void Creategoal()
-		{
-			post1 = new Box(PxTransform(PxVec3(.0f, .0f, .0f)));
-			post1->CreateShape(PxBoxGeometry(0.4f, 0.4f, 0.4f), .5f);
 		}
 		/// An example use of key release handling
 		void ExampleKeyReleaseHandler()

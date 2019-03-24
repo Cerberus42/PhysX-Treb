@@ -48,6 +48,35 @@ namespace PhysicsEngine
 		}
 	};
 
+	///Box class
+	class Base : public DynamicActor
+	{
+	public:
+		//a Box with default parameters:
+		// - pose in 0,0,0
+		// - dimensions: 1m x 1m x 1m
+		// - denisty: 1kg/m^3
+		Base(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(.1f, .1f, .1f), PxReal density = 1.f)
+			: DynamicActor(pose)
+		{
+			CreateShape(PxBoxGeometry(dimensions), density);
+		}
+	};
+
+	class Boxx : public StaticActor
+	{
+	public:
+		//a Box with default parameters:
+		// - pose in 0,0,0
+		// - dimensions: 1m x 1m x 1m
+		// - denisty: 1kg/m^3
+		Boxx(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(.5f, .5f, .5f), PxReal density = 1.f)
+			: StaticActor(pose)
+		{
+			CreateShape(PxBoxGeometry(dimensions), density);
+		}
+	};
+
 	class Capsule : public DynamicActor
 	{
 	public:
@@ -121,6 +150,22 @@ namespace PhysicsEngine
 
 			return GetPhysics()->createTriangleMesh(input);
 		}
+	};
+
+	class FixedJoint : public Joint
+	{
+	public:
+		FixedJoint(Actor* actor0, const PxTransform& localFrame0, Actor* actor1, const PxTransform& localFrame1) {
+			PxRigidActor* px_actor0 = 0;
+			if (actor0)
+				px_actor0 = (PxRigidActor*)actor0->Get();
+			
+
+			joint = (PxJoint*)PxFixedJointCreate(*GetPhysics(), px_actor0, localFrame0, (PxRigidActor*)actor1->Get(), localFrame1);
+			joint->setConstraintFlag(PxConstraintFlag::eCOLLISION_ENABLED, true);
+		//	joint->setBreakForce(100, 100);
+		}
+
 	};
 
 	//Distance joint with the springs switched on

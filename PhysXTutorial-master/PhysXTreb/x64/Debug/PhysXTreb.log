@@ -1,8 +1,6 @@
-﻿  Camera.cpp
-  GLFontRenderer.cpp
-  Renderer.cpp
-  PhysicsEngine.cpp
+﻿  PhysXTreb.cpp
+c:\users\student\documents\github\physx-treb\physxtutorial-master\physxtreb\myphysicsengine.h(252): warning C4305: 'argument': truncation from 'double' to 'physx::PxReal'
   VisualDebugger.cpp
-  PhysXTreb.cpp
+c:\users\student\documents\github\physx-treb\physxtutorial-master\physxtreb\myphysicsengine.h(252): warning C4305: 'argument': truncation from 'double' to 'physx::PxReal'
   Generating Code...
   PhysXTreb.vcxproj -> C:\Users\Student\Documents\GitHub\PhysX-Treb\PhysXTutorial-master\x64\Debug\PhysXTreb.exe
