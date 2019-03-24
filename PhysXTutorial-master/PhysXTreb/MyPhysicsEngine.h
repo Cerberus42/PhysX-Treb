@@ -184,6 +184,7 @@ namespace PhysicsEngine
 		Plane* plane;
 		Box* box, * box2;
 		MySimulationEventCallback* my_callback;
+		Box* post1, post2;
 		
 	public:
 		//specify your custom filter shader here
@@ -207,15 +208,19 @@ namespace PhysicsEngine
 			///Initialise and set the customised event callback
 			my_callback = new MySimulationEventCallback();
 			px_scene->setSimulationEventCallback(my_callback);
-
+						
 			plane = new Plane();
 			plane->Color(PxVec3(210.f/255.f,210.f/255.f,210.f/255.f));
 			Add(plane);
 
+			//goal = new Box(PxBoxGeometry(10.f, 0.f, 0.5f));
+
+
 			box = new Box(PxTransform(PxVec3(.0f,.5f,.0f)));
+			box->CreateShape(PxBoxGeometry(0.3f, 4.0f, 0.4f), 5);
 			box->Color(color_palette[0]);
 
-			box = PxBoxGeometry(PxVec3(.0f, 0.f, 0.f));
+			//box = PxBoxGeometry(PxVec3(.0f, 0.f, 0.f));
 			//Numbers are as follows First is Left Second is height third is right
 			box2 = new Box(PxTransform(PxVec3(3.0f, 1.5f, .0f)));
 			box2->Color(color_palette[1]);
@@ -231,12 +236,11 @@ namespace PhysicsEngine
 			box2->Name("Box2");
 			Add(box);
 			Add(box2);
-
-			
+			//Add(post1);
 			//joint two boxes together
 			//the joint is fixed to the centre of the first box, oriented by 90 degrees around the Y axis
 			//and has the second object attached 5 meters away along the Y axis from the first object.
-			RevoluteJoint joint(box, PxTransform(PxVec3(0.f,0.f,0.f),PxQuat(PxPi/2,PxVec3(0.f,1.f,0.f))), box2, PxTransform(PxVec3(0.f,5.f,0.f)));
+			//RevoluteJoint joint(box, PxTransform(PxVec3(0.f,0.f,0.f),PxQuat(PxPi/2,PxVec3(0.f,1.f,0.f))), box2, PxTransform(PxVec3(0.f,5.f,0.f)));
 			
 		}
 
@@ -244,7 +248,11 @@ namespace PhysicsEngine
 		virtual void CustomUpdate() 
 		{
 		}
-
+		void Creategoal()
+		{
+			post1 = new Box(PxTransform(PxVec3(.0f, .0f, .0f)));
+			post1->CreateShape(PxBoxGeometry(0.4f, 0.4f, 0.4f), .5f);
+		}
 		/// An example use of key release handling
 		void ExampleKeyReleaseHandler()
 		{
