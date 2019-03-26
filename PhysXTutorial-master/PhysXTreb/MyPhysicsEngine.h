@@ -246,7 +246,7 @@ namespace PhysicsEngine
 			armbox1 = new Boxx(PxTransform(PxVec3()));
 			armbox2 = new Boxx(PxTransform(PxVec3()));
 			armbox3 = new Boxx(PxTransform(PxVec3()));
-			counterWeight = new Box(PxTransform(PxVec3()));
+			counterWeight = new Box(PxTransform(PxVec3(0.f,0.f,0.f)));
 
 			//bracerleft = new Base(PxTransform(PxVec3(0.f, 2.5f, -1.f), PxQuat(PxPi / 2, PxVec3(0.f,1.f,0.f))));
 			//bracerright = new Boxx(PxTransform(PxVec3(0.0f, 1.5f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
@@ -262,7 +262,7 @@ namespace PhysicsEngine
 			upmidle->CreateShape(PxBoxGeometry(.45f, .45f, .45f), 3);
 			arm->CreateShape(PxBoxGeometry(7.5f, .5f, .5f), 1);
 
-			counterWeight->CreateShape(PxBoxGeometry(.45f, .45f, .45f), 3);
+			counterWeight->CreateShape(PxBoxGeometry(.45f, .45f, .45f), 5);
 
 			//bracerleft->CreateShape(PxBoxGeometry(.01f, 1.5f, .5f), 6);
 
@@ -288,17 +288,21 @@ namespace PhysicsEngine
 			box2->Color(color_palette[1]);
 
 
+			RevoluteJoint joint(arm, PxTransform(PxVec3(3.0f, 0.f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.0f, 0.f))), middle, PxTransform(PxVec3(0.0f, 7.0f, 0.f)));
+			counterJoint = new RevoluteJoint(arm, PxTransform(PxVec3(6.0f, -1.0f, 0.f), PxQuat(-PxPi / 2, PxVec3(0.f, 1.0f, 0.f))), counterWeight, PxTransform(PxVec3(0.0f, -1.0f, 0.f)));
+			counterJoint->SetLimits(0,PxPi / -2);
+
 			//set collision filter flags
-			box->SetupFiltering(FilterGroup::ACTOR0, FilterGroup::ACTOR1);
+			arm->SetupFiltering(FilterGroup::ACTOR0, FilterGroup::ACTOR1);
 			//use | operator to combine more actors e.g.
 			box->SetupFiltering(FilterGroup::ACTOR0, FilterGroup::ACTOR1 | FilterGroup::ACTOR2);
 			//don't forget to set your flags for the matching actor as well, e.g.:
-			//box2->SetupFiltering(FilterGroup::ACTOR1, FilterGroup::ACTOR0);
+			counterWeight->SetupFiltering(FilterGroup::ACTOR1, FilterGroup::ACTOR0);
 			//box->Name("Box1");
 			//box2->Name("Box2");
 			//Add(box);
 			//Add(box2);
-			Add(base);
+			//Add(base);
 			Add(middle);
 			Add(left);
 			Add(right);
@@ -306,8 +310,10 @@ namespace PhysicsEngine
 			Add(upright);
 			Add(upmidri);
 			Add(upmidle);
-			Add(arm);
 			Add(counterWeight);
+
+			Add(arm);
+
 			//Add(bracerleft);
 			//Add(ball);
 			//Add(post1);
@@ -322,9 +328,7 @@ namespace PhysicsEngine
 			//FixedJoint rightjoint(upright, PxTransform(PxVec3(.0f, .0f, .0f)), right, PxTransform(PxVec3(0.f, 0.0f, 0.f)));
 			//FixedJoint rightupoint(upright, PxTransform(PxVec3(.0f, .0f, .0f)), upmidri, PxTransform(PxVec3(0.f, 0.0f, 0.f)));
 
-			RevoluteJoint joint(arm, PxTransform(PxVec3(3.0f,0.f,0.f), PxQuat(PxPi/2,PxVec3(0.f,1.0f,0.f))), middle, PxTransform(PxVec3(0.0f,7.0f,0.f)));
-			counterJoint = new RevoluteJoint(arm, PxTransform(PxVec3(.0f,.0f,0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.0f, 0.f))), counterWeight, PxTransform(PxVec3(0.0f, 7.0f, 0.f)));
-			//counterJoint->SetLimits(PxPi/1, 3);
+
 			//joint(upleft, PxTransform(PxVec3(0.f, 0.f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, .0f, 1.f))), upmidri, PxTransform(PxVec3(0.f, .0f, 0.f)));
 
 		}
