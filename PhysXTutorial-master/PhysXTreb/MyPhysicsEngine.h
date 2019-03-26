@@ -189,9 +189,10 @@ namespace PhysicsEngine
 		Box* box, * box2;
 		MySimulationEventCallback* my_callback;
 		Boxx* left, * right, * middle, * upmidri, * upmidle, * armbox1, * armbox2, * armbox3, *bracerright;
-		Box* upright, *upleft, * arm;
+		Box* upright, *upleft, * arm, * counterWeight;
 		Sphere* ball;
 		Base* base,* bracerleft;
+		RevoluteJoint* counterJoint;
 		
 	public:
 		//specify your custom filter shader here
@@ -245,8 +246,10 @@ namespace PhysicsEngine
 			armbox1 = new Boxx(PxTransform(PxVec3()));
 			armbox2 = new Boxx(PxTransform(PxVec3()));
 			armbox3 = new Boxx(PxTransform(PxVec3()));
-			bracerleft = new Base(PxTransform(PxVec3(0.f, 2.5f, -1.f), PxQuat(PxPi / 2, PxVec3(0.f,1.f,0.f))));
-			bracerright = new Boxx(PxTransform(PxVec3(0.0f, 1.5f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
+			counterWeight = new Box(PxTransform(PxVec3()));
+
+			//bracerleft = new Base(PxTransform(PxVec3(0.f, 2.5f, -1.f), PxQuat(PxPi / 2, PxVec3(0.f,1.f,0.f))));
+			//bracerright = new Boxx(PxTransform(PxVec3(0.0f, 1.5f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
 
 
 			base->CreateShape(PxBoxGeometry(5.f, .1, 5.f), 3);
@@ -255,10 +258,13 @@ namespace PhysicsEngine
 			right->CreateShape(PxBoxGeometry(3.5f, .5f, .5f), 3);
 			upright->CreateShape(PxBoxGeometry(3.5f, .5f, .5f), 3);
 			upleft->CreateShape(PxBoxGeometry(3.5f, .5f, .5f), 3);
-			upmidri->CreateShape(PxBoxGeometry(.45f, .45f, .5f), 3);
-			upmidle->CreateShape(PxBoxGeometry(.45f, .45f, .5f), 3);
-			arm->CreateShape(PxBoxGeometry(5.5f, .5f, .5f), 1);
-			bracerleft->CreateShape(PxBoxGeometry(.01f, 1.5f, .5f), 6);
+			upmidri->CreateShape(PxBoxGeometry(.45f, .45f, .45f), 3);
+			upmidle->CreateShape(PxBoxGeometry(.45f, .45f, .45f), 3);
+			arm->CreateShape(PxBoxGeometry(7.5f, .5f, .5f), 1);
+
+			counterWeight->CreateShape(PxBoxGeometry(.45f, .45f, .45f), 3);
+
+			//bracerleft->CreateShape(PxBoxGeometry(.01f, 1.5f, .5f), 6);
 
 
 			right->Color(color_palette[4]);
@@ -267,7 +273,7 @@ namespace PhysicsEngine
 			upleft->Color(color_palette[6]);
 			middle->Color(color_palette[4]);
 			arm->Color(color_palette[2]);
-			bracerleft->Color(color_palette[2]);
+			//bracerleft->Color(color_palette[2]);
 			arm->Name("arm");
 
 
@@ -301,13 +307,14 @@ namespace PhysicsEngine
 			Add(upmidri);
 			Add(upmidle);
 			Add(arm);
+			Add(counterWeight);
 			//Add(bracerleft);
 			//Add(ball);
 			//Add(post1);
 			//joint two boxes together
 			//the joint is fixed to the centre of the first box, oriented by 90 degrees around the Y axis
 			//FixedJoint leftjoint(upleft, PxTransform(PxVec3(.0f, .0f, .0f)), left, PxTransform(PxVec3(0.f, 0.0f, 0.f)));
-			FixedJoint leftupjoint(upleft, PxTransform(PxVec3(2.0f, 1.0f, 2.0f), PxQuat(PxPi/2,PxVec3(0.f,1.f,0.f))), upmidle, PxTransform(PxVec3(0.f, 0.0f, 0.f)));
+			//FixedJoint leftupjoint(upleft, PxTransform(PxVec3(2.0f, 1.0f, 2.0f), PxQuat(PxPi/2,PxVec3(0.f,1.f,0.f))), upmidle, PxTransform(PxVec3(0.f, 0.0f, 0.f)));
 
 			//DistanceJoint leftbracerjoint(upleft, PxTransform(PxVec3(.0f, .0f, .0f)), bracerleft, PxTransform(PxVec3(0.f, 2.5f, 0.5f)));
 			//DistanceJoint leftjointbracer(left, PxTransform(PxVec3(.0f, .0f, .0f)), bracerleft, PxTransform(PxVec3(0.f, -2.5f, 0.5f)));
@@ -315,7 +322,9 @@ namespace PhysicsEngine
 			//FixedJoint rightjoint(upright, PxTransform(PxVec3(.0f, .0f, .0f)), right, PxTransform(PxVec3(0.f, 0.0f, 0.f)));
 			//FixedJoint rightupoint(upright, PxTransform(PxVec3(.0f, .0f, .0f)), upmidri, PxTransform(PxVec3(0.f, 0.0f, 0.f)));
 
-			RevoluteJoint joint(arm, PxTransform(PxVec3(.0f,0.f,0.f), PxQuat(PxPi/2,PxVec3(1.f,0.0f,0.f))), upmidri, PxTransform(PxVec3(3.5f,0.0f,-1.f)));
+			RevoluteJoint joint(arm, PxTransform(PxVec3(3.0f,0.f,0.f), PxQuat(PxPi/2,PxVec3(0.f,1.0f,0.f))), middle, PxTransform(PxVec3(0.0f,7.0f,0.f)));
+			counterJoint = new RevoluteJoint(arm, PxTransform(PxVec3(.0f,.0f,0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.0f, 0.f))), counterWeight, PxTransform(PxVec3(0.0f, 7.0f, 0.f)));
+			//counterJoint->SetLimits(PxPi/1, 3);
 			//joint(upleft, PxTransform(PxVec3(0.f, 0.f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, .0f, 1.f))), upmidri, PxTransform(PxVec3(0.f, .0f, 0.f)));
 
 		}
