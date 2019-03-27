@@ -33,6 +33,57 @@ namespace PhysicsEngine
 		}
 	};
 
+	class GoalShape : public DynamicActor
+	{
+	public:
+		GoalShape(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(6.5f, 0.5f, 0.5f), PxReal density = 1.0f)
+			: DynamicActor(pose)
+		{
+			CreateShape(PxBoxGeometry(dimensions), density);
+			CreateShape(PxBoxGeometry(dimensions), density);
+			CreateShape(PxBoxGeometry(dimensions), density);
+			CreateShape(PxBoxGeometry(dimensions), density);
+			CreateShape(PxBoxGeometry(dimensions), density);
+			CreateShape(PxBoxGeometry(dimensions), density);
+
+			GetShape(0)->setLocalPose(PxTransform(PxVec3(.0f, 6.5f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
+			GetShape(1)->setLocalPose(PxTransform(PxVec3(0.f, 0.f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
+			GetShape(2)->setLocalPose(PxTransform(PxVec3(6.5f, 12.5f, 0.f), PxQuat(PxPi / 2, PxVec3(1.f, 0.f, 0.f))));
+			GetShape(3)->setLocalPose(PxTransform(PxVec3(-6.5f, 12.5f, 0.f), PxQuat(PxPi / 2, PxVec3(1.f, 0.f, 0.f))));
+			GetShape(4)->setLocalPose(PxTransform(PxVec3(12.5f, 18.5f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
+			GetShape(5)->setLocalPose(PxTransform(PxVec3(-12.5f, 18.5f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
+		}
+	};
+
+	class Trebuchet : DynamicActor
+
+	{
+	public:
+		Trebuchet(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(0.5f, 0.5f, 0.5f), PxReal density = 1.0f)
+			: DynamicActor(pose)
+		{
+			CreateShape(PxBoxGeometry(dimensions), density);
+			CreateShape(PxBoxGeometry(dimensions), density);
+			CreateShape(PxBoxGeometry(dimensions), density);
+			CreateShape(PxBoxGeometry(dimensions), density);
+			CreateShape(PxBoxGeometry(dimensions), density);
+			CreateShape(PxBoxGeometry(dimensions), density);
+			CreateShape(PxBoxGeometry(dimensions), density);
+
+
+			//0 = left 1 = right 2 = middle 3 = up left 4 = up right = 5 = middle left 6 = middle left
+			GetShape(0)->setLocalPose(PxTransform(PxVec3(0.0f, 1.5f, 0.f)));
+			GetShape(1)->setLocalPose(PxTransform(PxVec3(0.0f, 1.5f, 4.f)));
+			GetShape(2)->setLocalPose(PxTransform(PxVec3(.0f, 1.5f, 2.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
+			GetShape(3)->setLocalPose(PxTransform(PxVec3(0.0f, 5.5f, 0.0f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
+			GetShape(4)->setLocalPose(PxTransform(PxVec3(.0f, 5.5f, 4.0f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
+			GetShape(5)->setLocalPose(PxTransform(PxVec3(0.0f, 8.5f, 3.0f)));
+			GetShape(6)->setLocalPose(PxTransform(PxVec3(0.0f, 8.5f, 1.f)));
+
+
+		}
+	};
+
 	///Box class
 	class Box : public DynamicActor
 	{

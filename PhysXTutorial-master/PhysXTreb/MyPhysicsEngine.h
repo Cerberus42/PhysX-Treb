@@ -193,6 +193,9 @@ namespace PhysicsEngine
 		Sphere* ball;
 		Base* base,* bracerleft;
 		RevoluteJoint* counterJoint;
+
+		Trebuchet* treb;
+		GoalShape* test;
 		
 	public:
 		//specify your custom filter shader here
@@ -247,9 +250,12 @@ namespace PhysicsEngine
 			armbox2 = new Boxx(PxTransform(PxVec3()));
 			armbox3 = new Boxx(PxTransform(PxVec3()));
 			counterWeight = new Box(PxTransform(PxVec3(0.f,0.f,0.f)));
+			test = new GoalShape(PxTransform(PxVec3(50.f, 1.f, 0.f), PxQuat(PxPi/2, PxVec3(0.f,1.f,0.f))));
+			treb = new Trebuchet(PxTransform(PxVec3(-20.f, 1.f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
 
 			//bracerleft = new Base(PxTransform(PxVec3(0.f, 2.5f, -1.f), PxQuat(PxPi / 2, PxVec3(0.f,1.f,0.f))));
 			//bracerright = new Boxx(PxTransform(PxVec3(0.0f, 1.5f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
+
 
 
 			base->CreateShape(PxBoxGeometry(5.f, .1, 5.f), 3);
@@ -266,7 +272,7 @@ namespace PhysicsEngine
 
 			//bracerleft->CreateShape(PxBoxGeometry(.01f, 1.5f, .5f), 6);
 
-
+			test->Color(color_palette[1]);
 			right->Color(color_palette[4]);
 			left->Color(color_palette[4]);
 			upright->Color(color_palette[6]);
@@ -275,7 +281,7 @@ namespace PhysicsEngine
 			arm->Color(color_palette[2]);
 			//bracerleft->Color(color_palette[2]);
 			arm->Name("arm");
-
+			counterWeight->Name("counterWeight");
 
 			box = new Box(PxTransform(PxVec3(.0f,10.5f,.0f)));
 			box->CreateShape(PxBoxGeometry(1.f, 4.0f, 1.f), 1);
@@ -289,13 +295,13 @@ namespace PhysicsEngine
 
 
 			RevoluteJoint joint(arm, PxTransform(PxVec3(3.0f, 0.f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.0f, 0.f))), middle, PxTransform(PxVec3(0.0f, 7.0f, 0.f)));
-			counterJoint = new RevoluteJoint(arm, PxTransform(PxVec3(6.0f, -1.0f, 0.f), PxQuat(-PxPi / 2, PxVec3(0.f, 1.0f, 0.f))), counterWeight, PxTransform(PxVec3(0.0f, -1.0f, 0.f)));
-			counterJoint->SetLimits(0,PxPi / -2);
-
+			counterJoint = new RevoluteJoint(arm, PxTransform(PxVec3(6.0f, -1.0f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.0f, 0.f))), counterWeight, PxTransform(PxVec3(0.0f, .5f, 0.f)));
+			counterJoint->SetLimits(-PxPi/2, PxPi / 4);
+			
 			//set collision filter flags
-			arm->SetupFiltering(FilterGroup::ACTOR0, FilterGroup::ACTOR1);
+			//arm->SetupFiltering(FilterGroup::ACTOR0, FilterGroup::ACTOR1);
 			//use | operator to combine more actors e.g.
-			box->SetupFiltering(FilterGroup::ACTOR0, FilterGroup::ACTOR1 | FilterGroup::ACTOR2);
+			arm->SetupFiltering(FilterGroup::ACTOR0, FilterGroup::ACTOR1 | FilterGroup::ACTOR2);
 			//don't forget to set your flags for the matching actor as well, e.g.:
 			counterWeight->SetupFiltering(FilterGroup::ACTOR1, FilterGroup::ACTOR0);
 			//box->Name("Box1");
@@ -303,6 +309,8 @@ namespace PhysicsEngine
 			//Add(box);
 			//Add(box2);
 			//Add(base);
+
+			//Add(treb);
 			Add(middle);
 			Add(left);
 			Add(right);
@@ -311,9 +319,9 @@ namespace PhysicsEngine
 			Add(upmidri);
 			Add(upmidle);
 			Add(counterWeight);
-
 			Add(arm);
-
+			Add(test);
+			
 			//Add(bracerleft);
 			//Add(ball);
 			//Add(post1);
