@@ -47,6 +47,8 @@ namespace VisualDebugger
 	bool hud_show = true;
 	HUD hud;
 	int counter = 1/10;
+
+	float fps = 0;
 	int t1 = time(NULL), t2, t3 = 0;
 
 	//Init the debugger
@@ -96,25 +98,20 @@ namespace VisualDebugger
 		//add a help screen
 		hud.AddLine(HELP, " Simulation");
 		hud.AddLine(HELP, "    F9 - select next actor");
-		hud.AddLine(HELP, "    F10 - pause");
-		hud.AddLine(HELP, "    F12 - reset");
-		hud.AddLine(HELP, "");
+		hud.AddLine(HELP, "    F1 - F2 - F3 - PGUP Increase Mass");
+		hud.AddLine(HELP, "    F12 - Reset Scene");
+		hud.AddLine(HELP, "    PGDOWN - Reset Mass");
 		hud.AddLine(HELP, " Display");
-		hud.AddLine(HELP, "    F5 - help on/off");
-		hud.AddLine(HELP, "    F6 - shadows on/off");
-		hud.AddLine(HELP, "    F7 - render mode");
-		hud.AddLine(HELP, "");
 		hud.AddLine(HELP, " Camera");
 		hud.AddLine(HELP, "    W,S,A,D,Q,Z - forward,backward,left,right,up,down");
-		hud.AddLine(HELP, "    mouse + click - change orientation");
+		hud.AddLine(HELP, "    F4 Spawn Balls");
 		hud.AddLine(HELP, "    F8 - reset view");
 		hud.AddLine(HELP, "");
 		hud.AddLine(HELP, " Force (applied to the selected actor)");
 		hud.AddLine(HELP, "    I,K,J,L,U,M - forward,backward,left,right,up,down");
+		//hud.AddLine(HELP, "Score", counter);
 		//add a pause screen
-		hud.AddLine(PAUSE, "");
-		hud.AddLine(PAUSE, "");
-		hud.AddLine(PAUSE, "");
+
 		hud.AddLine(PAUSE, "   Simulation paused. Press F10 to continue.");
 		//set font size for all screens
 		hud.FontSize(0.018f);
@@ -174,10 +171,17 @@ namespace VisualDebugger
 
 		if (t2 - t1 > 0)
 		{
+			fps = t3 / (t2 - t1);
 			std::cout << "Current FPS: " << t3 / (t2 - t1) << std::endl;
 			t3 = 0;
 			t1 = t2;
 		}
+
+		scene->Update(delta_time);
+		string FPS = to_string(fps);
+		hud.Clear();
+		hud.AddLine(HELP, "FPS - " + FPS);
+
 	}
 
 	//user defined keyboard handlers
@@ -298,18 +302,17 @@ namespace VisualDebugger
 			camera->Reset();
 			break;
 		case GLUT_KEY_PAGE_UP:
-			scene->GetSelectedActor()->setMass(10.f);
+			scene->velociraptor();
 			break;
 		case GLUT_KEY_PAGE_DOWN:
 
 			scene->GetSelectedActor()->setMass(30.f);
 			break;
-
 		case GLUT_KEY_F1:
-			scene->GetSelectedActor()->setMass(50.f);
+			scene->GetSelectedActor()->setMass(110.f);
 			break;
 		case GLUT_KEY_F2:
-			scene->GetSelectedActor()->setMass(100.f);
+			scene->GetSelectedActor()->setMass(200.f);
 			break;
 		case GLUT_KEY_F3:
 			scene->GetSelectedActor()->setMass(30000.f);
@@ -397,8 +400,7 @@ namespace VisualDebugger
 		//exit
 		if (key == 27)
 			exit(0);
-
-
+			
 		UserKeyPress(key);
 	}
 

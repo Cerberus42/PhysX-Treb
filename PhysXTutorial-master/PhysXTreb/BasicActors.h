@@ -33,11 +33,46 @@ namespace PhysicsEngine
 		}
 	};
 
-	class GoalShape : public StaticActor
+	class Swing : public DynamicActor
+	{
+	public:
+		Swing(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(6.5f, 0.5f, 0.5f), PxReal density = 1.0f)
+			: DynamicActor(pose)
+		{
+			CreateShape(PxBoxGeometry(dimensions), density);
+			CreateShape(PxBoxGeometry(dimensions), density);
+			CreateShape(PxBoxGeometry(dimensions), density);
+
+			GetShape(0)->setLocalPose(PxTransform(PxVec3(0.f, 3.5f, 5.f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
+			GetShape(1)->setLocalPose(PxTransform(PxVec3(0.f, 3.5f, -5.f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
+			GetShape(2)->setLocalPose(PxTransform(PxVec3(0.f, 9.5f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
+		}
+	};
+
+	class Stadium : public StaticActor
+	{
+	public:
+		Stadium(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(15.5f, 3.5f, 200.5f), PxReal density = 1.0f)
+			: StaticActor(pose)
+		{
+			CreateShape(PxBoxGeometry(dimensions), density);
+			CreateShape(PxBoxGeometry(dimensions), density);
+			CreateShape(PxBoxGeometry(15.5f, 15.5f, 200.5f), density);
+			CreateShape(PxBoxGeometry(15.5f, 15.5f, 200.5f), density);
+
+			GetShape(0)->setLocalPose(PxTransform(PxVec3(100.0f, .5f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
+			GetShape(1)->setLocalPose(PxTransform(PxVec3(-150.0f, .5f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
+			GetShape(2)->setLocalPose(PxTransform(PxVec3(.0f, .5f, 100.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
+			GetShape(3)->setLocalPose(PxTransform(PxVec3(0.0f, .5f, -150.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
+
+
+		}
+	};
+	class GoalShape : public DynamicActor
 	{
 	public:
 		GoalShape(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(6.5f, 0.5f, 0.5f), PxReal density = 1.0f)
-			: StaticActor(pose)
+			: DynamicActor(pose)
 		{
 			CreateShape(PxBoxGeometry(dimensions), density);
 			CreateShape(PxBoxGeometry(dimensions), density);
@@ -45,6 +80,7 @@ namespace PhysicsEngine
 			CreateShape(PxBoxGeometry(dimensions), density);
 			CreateShape(PxBoxGeometry(dimensions), density);
 			CreateShape(PxBoxGeometry(dimensions), density);
+			CreateShape(PxBoxGeometry(13.f, .1f,11.f), density);
 
 			GetShape(0)->setLocalPose(PxTransform(PxVec3(.0f, 6.5f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
 			GetShape(1)->setLocalPose(PxTransform(PxVec3(0.f, 0.f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
@@ -52,6 +88,9 @@ namespace PhysicsEngine
 			GetShape(3)->setLocalPose(PxTransform(PxVec3(0.f, 12.5f, -6.5f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
 			GetShape(4)->setLocalPose(PxTransform(PxVec3(0.f, 18.5f, -12.5f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
 			GetShape(5)->setLocalPose(PxTransform(PxVec3(0.f, 18.5f, 12.5f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
+			GetShape(6)->setLocalPose(PxTransform(PxVec3(0.f, 27.f, 0), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
+
+
 		}
 	};
 
