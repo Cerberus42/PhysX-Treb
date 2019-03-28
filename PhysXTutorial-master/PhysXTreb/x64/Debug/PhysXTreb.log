@@ -1,6 +1,10 @@
 ﻿  VisualDebugger.cpp
-c:\users\student\desktop\physx-treb\physxtutorial-master\physxtreb\myphysicsengine.h(261): warning C4305: 'argument': truncation from 'double' to 'physx::PxReal'
-  PhysXTreb.cpp
-c:\users\student\desktop\physx-treb\physxtutorial-master\physxtreb\myphysicsengine.h(261): warning C4305: 'argument': truncation from 'double' to 'physx::PxReal'
-  Generating Code...
+c:\users\student\desktop\physx-treb\physxtutorial-master\physxtreb\basicactors.h(98): warning C4305: 'argument': truncation from 'double' to 'physx::PxReal'
+c:\users\student\desktop\physx-treb\physxtutorial-master\physxtreb\myphysicsengine.h(170): warning C4200: nonstandard extension used: zero-sized array in struct/union
+  c:\users\student\desktop\physx-treb\physxtutorial-master\physxtreb\myphysicsengine.h(170): note: This member will be ignored by a defaulted constructor or copy/move assignment operator
+c:\users\student\desktop\physx-treb\physxtutorial-master\physxtreb\myphysicsengine.h(207): warning C4305: 'argument': truncation from 'double' to 'physx::PxReal'
+c:\users\student\desktop\physx-treb\physxtutorial-master\physxtreb\myphysicsengine.h(232): warning C4305: 'argument': truncation from 'double' to 'physx::PxReal'
+c:\users\student\desktop\physx-treb\physxtutorial-master\physxtreb\myphysicsengine.h(321): warning C4305: 'argument': truncation from 'double' to 'physx::PxReal'
+c:\users\student\desktop\physx-treb\physxtutorial-master\physxtreb\visualdebugger.cpp(348): warning C4553: '==': result of expression not used; did you intend '='?
+c:\users\student\desktop\physx-treb\physxtutorial-master\physxtreb\visualdebugger.cpp(355): warning C4553: '==': result of expression not used; did you intend '='?
   PhysXTreb.vcxproj -> C:\Users\Student\Desktop\PhysX-Treb\PhysXTutorial-master\x64\Debug\PhysXTreb.exe

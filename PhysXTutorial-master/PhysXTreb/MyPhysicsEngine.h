@@ -149,38 +149,7 @@ namespace PhysicsEngine
 		virtual void onSleep(PxActor **actors, PxU32 count) {}
 	};
 
-	//A simple filter shader based on PxDefaultSimulationFilterShader - without group filtering
-	static PxFilterFlags CustomFilterShader( PxFilterObjectAttributes attributes0,	PxFilterData filterData0,
-		PxFilterObjectAttributes attributes1,	PxFilterData filterData1,
-		PxPairFlags& pairFlags,	const void* constantBlock,	PxU32 constantBlockSize)
-	{
-		// let triggers through
-		if(PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
-		{
-			pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
-			return PxFilterFlags();
-		}
 
-		pairFlags = PxPairFlag::eCONTACT_DEFAULT;
-		//enable continous collision detection
-//		pairFlags |= PxPairFlag::eCCD_LINEAR;
-		
-		
-		//customise collision filtering here
-		//e.g.
-
-		// trigger the contact callback for pairs (A,B) where 
-		// the filtermask of A contains the ID of B and vice versa.
-		if((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
-		{
-			//trigger onContact callback for this pair of objects
-			pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND;
-			pairFlags |= PxPairFlag::eNOTIFY_TOUCH_LOST;
-//			pairFlags |= PxPairFlag::eNOTIFY_CONTACT_POINTS;
-		}
-
-		return PxFilterFlags();
-	};
 
 	///Custom scene class
 	class MyScene : public Scene
@@ -196,7 +165,11 @@ namespace PhysicsEngine
 
 		Trebuchet* treb;
 		GoalShape* test;
-		
+		TrebuchetArm* trebarm;
+		int mass;
+		FullTreb * Full[0];
+
+	
 	public:
 		//specify your custom filter shader here
 		//PxDefaultSimulationFilterShader by default
@@ -221,7 +194,7 @@ namespace PhysicsEngine
 			px_scene->setSimulationEventCallback(my_callback);
 						
 			plane = new Plane();
-			plane->Color(PxVec3(210.f/255.f,210.f/255.f,210.f/255.f));
+			plane->Color(color_palette[12]);
 			Add(plane);
 
 			
@@ -230,12 +203,12 @@ namespace PhysicsEngine
 
 			/*========================================BALL=================================================*/
 
-			ball = new Sphere(PxTransform(PxVec3(3.f, 4.f, 1.f)));
-			ball->CreateShape(PxSphereGeometry(1), 1);
+			ball = new Sphere(PxTransform(PxVec3(0.f, 10.f, 5.f)));
+			ball->CreateShape(PxSphereGeometry(1), 0.1);
 			ball->Color(color_palette[5]);
 
 
-			//My code is super ugly and I should of made a class for it lol
+			//My code is super ugly and I should of made a class for it (I cleaned it up lol)
 			/*=======================================TREB============================================*/
 			middle = new Boxx(PxTransform(PxVec3(.0f, 1.5f, 2.f), PxQuat(PxPi/2,PxVec3(0.f,1.f,0.f))));
 			left = new Boxx(PxTransform(PxVec3(0.0f, 1.5f, 0.f)));
@@ -244,21 +217,19 @@ namespace PhysicsEngine
 			upleft = new Box(PxTransform(PxVec3(0.0f, 5.5f, 0.0f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
 			upmidri = new Boxx(PxTransform(PxVec3(0.0f, 8.5f, 3.0f)));
 			upmidle = new Boxx(PxTransform(PxVec3(0.0f, 8.5f, 1.f)));
-			base = new Base(PxTransform(PxVec3(0.f, 0.f, 0.f)));
+			base = new Base(PxTransform(PxVec3(0.f, 0.f, -50.f)));
 			arm = new Box(PxTransform(PxVec3(3.0f, 8.5f, 2.f), PxQuat(PxPi / 7, PxVec3(0.f, 0.f, 1.f))));
-			armbox1 = new Boxx(PxTransform(PxVec3()));
-			armbox2 = new Boxx(PxTransform(PxVec3()));
-			armbox3 = new Boxx(PxTransform(PxVec3()));
 			counterWeight = new Box(PxTransform(PxVec3(0.f,0.f,0.f)));
-			test = new GoalShape(PxTransform(PxVec3(50.f, 1.f, 0.f), PxQuat(PxPi/2, PxVec3(0.f,1.f,0.f))));
-			treb = new Trebuchet(PxTransform(PxVec3(-20.f, 1.f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
-
+			test = new GoalShape(PxTransform(PxVec3(10.f, 1.f, -80.f), PxQuat(PxPi/2, PxVec3(0.f,1.f,0.f))));
+			treb = new Trebuchet(PxTransform(PxVec3(0.f, 1.5f, -5.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
+			trebarm = new TrebuchetArm(PxTransform(PxVec3(0.f, 6.f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, -1.f, 0.f))));
 			//bracerleft = new Base(PxTransform(PxVec3(0.f, 2.5f, -1.f), PxQuat(PxPi / 2, PxVec3(0.f,1.f,0.f))));
 			//bracerright = new Boxx(PxTransform(PxVec3(0.0f, 1.5f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
+			
+			
+			Full[0] = new FullTreb(PxTransform(PxVec3(-20.f, 1.f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
 
-
-
-			base->CreateShape(PxBoxGeometry(5.f, .1, 5.f), 3);
+			base->CreateShape(PxBoxGeometry(500.f, .1, 5.f), 3);
 			middle->CreateShape(PxBoxGeometry(1.5f, .5f, .5f), 3);
 			left->CreateShape(PxBoxGeometry(3.5f, .5f, .5f), 3);
 			right->CreateShape(PxBoxGeometry(3.5f, .5f, .5f), 3);
@@ -266,20 +237,21 @@ namespace PhysicsEngine
 			upleft->CreateShape(PxBoxGeometry(3.5f, .5f, .5f), 3);
 			upmidri->CreateShape(PxBoxGeometry(.45f, .45f, .45f), 3);
 			upmidle->CreateShape(PxBoxGeometry(.45f, .45f, .45f), 3);
-			arm->CreateShape(PxBoxGeometry(7.5f, .5f, .5f), 1);
+			arm->CreateShape(PxBoxGeometry(6.5f, .5f, .5f), .5);
 
-			counterWeight->CreateShape(PxBoxGeometry(.45f, .45f, .45f), 5);
+			counterWeight->CreateShape(PxBoxGeometry(.45f, .45f, .45f), 1);
 
 			//bracerleft->CreateShape(PxBoxGeometry(.01f, 1.5f, .5f), 6);
 
-			test->Color(color_palette[1]);
+			test->Color(color_palette[3]);
 			right->Color(color_palette[4]);
 			left->Color(color_palette[4]);
 			upright->Color(color_palette[6]);
 			upleft->Color(color_palette[6]);
 			middle->Color(color_palette[4]);
 			arm->Color(color_palette[2]);
-			//bracerleft->Color(color_palette[2]);
+			trebarm->Color(color_palette[2]);
+			treb->Color(color_palette[5]);
 			arm->Name("arm");
 			counterWeight->Name("counterWeight");
 
@@ -293,10 +265,13 @@ namespace PhysicsEngine
 			box2 = new Box(PxTransform(PxVec3(3.0f, 6.5f, .0f)));
 			box2->Color(color_palette[1]);
 
+			RevoluteJoint joint(trebarm, PxTransform(PxVec3(-4.5f, 0.5f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, -1.0f, 0.f))), treb, PxTransform(PxVec3(0.0f, 8.5f, 2.f), PxQuat(PxPi / 2, PxVec3(0.f,1.f,0.f))));
 
-			RevoluteJoint joint(arm, PxTransform(PxVec3(3.0f, 0.f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.0f, 0.f))), middle, PxTransform(PxVec3(0.0f, 7.0f, 0.f)));
-			counterJoint = new RevoluteJoint(arm, PxTransform(PxVec3(6.0f, -1.0f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.0f, 0.f))), counterWeight, PxTransform(PxVec3(0.0f, .5f, 0.f)));
+			//RevoluteJoint joint(trebarm, PxTransform(PxVec3(1.0f, -8.f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.0f, 0.f))), treb, PxTransform(PxVec3(0.0f, .0f, 0.f)));
+			counterJoint = new RevoluteJoint(trebarm, PxTransform(PxVec3(-8.0f, -1.0f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.0f, 0.f))), counterWeight, PxTransform(PxVec3(0.0f, .5f, 0.f)));
 			counterJoint->SetLimits(-PxPi/2, PxPi / 4);
+
+			//test->Get()->isRigidBody->setGlobalPose(PxTransform(PxVec3(0.f, 0.f, 0.f), PxQuat(PxPi/2, PxVec3(0.f,0.f,1.f))));
 			
 			//set collision filter flags
 			//arm->SetupFiltering(FilterGroup::ACTOR0, FilterGroup::ACTOR1);
@@ -308,22 +283,23 @@ namespace PhysicsEngine
 			//box2->Name("Box2");
 			//Add(box);
 			//Add(box2);
-			//Add(base);
+			Add(base);
 
-			//Add(treb);
-			Add(middle);
-			Add(left);
-			Add(right);
-			Add(upleft);
-			Add(upright);
-			Add(upmidri);
-			Add(upmidle);
+			Add(treb);
+			Add(trebarm);
+			//Add(middle);
+			//Add(left);
+			//Add(right);
+			//Add(upleft);
+			//Add(upright);
+			//Add(upmidri);
+			//Add(upmidle);
 			Add(counterWeight);
-			Add(arm);
+			//Add(arm);
 			Add(test);
 			
 			//Add(bracerleft);
-			//Add(ball);
+			Add(ball);
 			//Add(post1);
 			//joint two boxes together
 			//the joint is fixed to the centre of the first box, oriented by 90 degrees around the Y axis
@@ -340,7 +316,12 @@ namespace PhysicsEngine
 			//joint(upleft, PxTransform(PxVec3(0.f, 0.f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, .0f, 1.f))), upmidri, PxTransform(PxVec3(0.f, .0f, 0.f)));
 
 		}
-
+		void spawnBall(){
+			ball = new Sphere(PxTransform(PxVec3(0.f, 10.f, 5.f)));
+			ball->CreateShape(PxSphereGeometry(1), 0.1);
+			ball->Color(color_palette[5]);
+			Add(ball);
+		}
 		//Custom udpate function
 		virtual void CustomUpdate() 
 		{

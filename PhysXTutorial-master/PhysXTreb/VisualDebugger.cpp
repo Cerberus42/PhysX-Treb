@@ -46,6 +46,8 @@ namespace VisualDebugger
 	bool key_state[MAX_KEYS];
 	bool hud_show = true;
 	HUD hud;
+	int counter = 1/10;
+	int t1 = time(NULL), t2, t3 = 0;
 
 	//Init the debugger
 	void Init(const char *window_name, int width, int height)
@@ -166,6 +168,16 @@ namespace VisualDebugger
 
 		//perform a single simulation step
 		scene->Update(delta_time);
+
+		t3++;
+		t2 = time(NULL);
+
+		if (t2 - t1 > 0)
+		{
+			std::cout << "Current FPS: " << t3 / (t2 - t1) << std::endl;
+			t3 = 0;
+			t1 = t2;
+		}
 	}
 
 	//user defined keyboard handlers
@@ -227,6 +239,7 @@ namespace VisualDebugger
 		}
 	}
 
+
 	//handle force control keys
 	void ForceInput(int key)
 	{
@@ -251,9 +264,11 @@ namespace VisualDebugger
 		case 'U': //up
 			scene->GetSelectedActor()->addForce(PxVec3(0,11,0)*gForceStrength);
 			break;
+
 		case 'M': //down
 			scene->GetSelectedActor()->addForce(PxVec3(0,-11,0)*gForceStrength);
 			break;
+
 		default:
 			break;
 		}
@@ -282,9 +297,29 @@ namespace VisualDebugger
 			//reset camera view
 			camera->Reset();
 			break;
+		case GLUT_KEY_PAGE_UP:
+			scene->GetSelectedActor()->setMass(10.f);
+			break;
+		case GLUT_KEY_PAGE_DOWN:
 
+			scene->GetSelectedActor()->setMass(30.f);
+			break;
+
+		case GLUT_KEY_F1:
+			scene->GetSelectedActor()->setMass(50.f);
+			break;
+		case GLUT_KEY_F2:
+			scene->GetSelectedActor()->setMass(100.f);
+			break;
+		case GLUT_KEY_F3:
+			scene->GetSelectedActor()->setMass(30000.f);
+			break;
+		case GLUT_KEY_F4:
+			scene->spawnBall();
+			break;
 			//simulation control
 		case GLUT_KEY_F9:
+
 			//select next actor
 			scene->SelectNextActor();
 			break;
@@ -301,6 +336,55 @@ namespace VisualDebugger
 		}
 	}
 
+	void counting()
+	{
+		counter++;
+		return;
+		if (counter < 7)
+		{
+			std::cout << (counter);
+			if (counter = 1) {
+				scene->GetSelectedActor()->setMass(10.f);
+				counter == 1;
+				std::cout << (counter);
+				return;
+			}
+			if (counter = 2) {
+				scene->GetSelectedActor()->setMass(20.f);
+				std::cout << (counter);
+				counter == 2;
+				return;
+			}
+
+			if (counter = 3) {
+				scene->GetSelectedActor()->setMass(30.f);
+				std::cout << (counter);
+				counter = 3;
+
+			}
+			if (counter = 4) {
+				scene->GetSelectedActor()->setMass(40.f);
+				std::cout << (counter);
+
+			}
+			if (counter = 5) {
+				scene->GetSelectedActor()->setMass(50.f);
+				std::cout << (counter);
+
+			}
+			if (counter = 6) {
+				scene->GetSelectedActor()->setMass(60.f);
+				std::cout << (counter);
+
+			}
+			if (counter = 7) {
+				scene->GetSelectedActor()->setMass(70.f);
+
+			}
+		}
+		if (counter >> 7)
+			counter = 0;
+	}
 	//handle single key presses
 	void KeyPress(unsigned char key, int x, int y)
 	{
@@ -309,10 +393,11 @@ namespace VisualDebugger
 			return;
 
 		key_state[key] = true;
-
+		
 		//exit
 		if (key == 27)
 			exit(0);
+
 
 		UserKeyPress(key);
 	}

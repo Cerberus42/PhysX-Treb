@@ -33,11 +33,11 @@ namespace PhysicsEngine
 		}
 	};
 
-	class GoalShape : public DynamicActor
+	class GoalShape : public StaticActor
 	{
 	public:
 		GoalShape(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(6.5f, 0.5f, 0.5f), PxReal density = 1.0f)
-			: DynamicActor(pose)
+			: StaticActor(pose)
 		{
 			CreateShape(PxBoxGeometry(dimensions), density);
 			CreateShape(PxBoxGeometry(dimensions), density);
@@ -48,27 +48,30 @@ namespace PhysicsEngine
 
 			GetShape(0)->setLocalPose(PxTransform(PxVec3(.0f, 6.5f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
 			GetShape(1)->setLocalPose(PxTransform(PxVec3(0.f, 0.f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
-			GetShape(2)->setLocalPose(PxTransform(PxVec3(6.5f, 12.5f, 0.f), PxQuat(PxPi / 2, PxVec3(1.f, 0.f, 0.f))));
-			GetShape(3)->setLocalPose(PxTransform(PxVec3(-6.5f, 12.5f, 0.f), PxQuat(PxPi / 2, PxVec3(1.f, 0.f, 0.f))));
-			GetShape(4)->setLocalPose(PxTransform(PxVec3(12.5f, 18.5f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
-			GetShape(5)->setLocalPose(PxTransform(PxVec3(-12.5f, 18.5f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
+			GetShape(2)->setLocalPose(PxTransform(PxVec3(0.f, 12.5f, 6.5f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
+			GetShape(3)->setLocalPose(PxTransform(PxVec3(0.f, 12.5f, -6.5f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
+			GetShape(4)->setLocalPose(PxTransform(PxVec3(0.f, 18.5f, -12.5f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
+			GetShape(5)->setLocalPose(PxTransform(PxVec3(0.f, 18.5f, 12.5f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
 		}
 	};
 
-	class Trebuchet : DynamicActor
+	class Catapult : public StaticActor {
 
+	};
+
+	class Trebuchet : public DynamicActor
 	{
 	public:
-		Trebuchet(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(0.5f, 0.5f, 0.5f), PxReal density = 1.0f)
+		Trebuchet(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(0.5f, 0.5f, 0.5f), PxReal density = 2.0f)
 			: DynamicActor(pose)
 		{
-			CreateShape(PxBoxGeometry(dimensions), density);
-			CreateShape(PxBoxGeometry(dimensions), density);
-			CreateShape(PxBoxGeometry(dimensions), density);
-			CreateShape(PxBoxGeometry(dimensions), density);
-			CreateShape(PxBoxGeometry(dimensions), density);
-			CreateShape(PxBoxGeometry(dimensions), density);
-			CreateShape(PxBoxGeometry(dimensions), density);
+			CreateShape(PxBoxGeometry(PxVec3(3.5f,.5f,.5f)), density);//left
+			CreateShape(PxBoxGeometry(PxVec3(3.5f,.5f, .5f)), density);//right
+			CreateShape(PxBoxGeometry(PxVec3(3.5f, .5f, .5f)), density);//middle
+			CreateShape(PxBoxGeometry(PxVec3(3.5f, .5f, .5f)), density);//up left
+			CreateShape(PxBoxGeometry(PxVec3(3.5f, .5f, 0.5f)), density);//up right
+			CreateShape(PxBoxGeometry(PxVec3(0.45f, .45f, 0.5f)), density);//middle left
+			CreateShape(PxBoxGeometry(PxVec3(0.45f, .45f, 0.5f)), density);//middle right
 
 
 			//0 = left 1 = right 2 = middle 3 = up left 4 = up right = 5 = middle left 6 = middle left
@@ -79,6 +82,37 @@ namespace PhysicsEngine
 			GetShape(4)->setLocalPose(PxTransform(PxVec3(.0f, 5.5f, 4.0f), PxQuat(PxPi / 2, PxVec3(0.f, 0.f, 1.f))));
 			GetShape(5)->setLocalPose(PxTransform(PxVec3(0.0f, 8.5f, 3.0f)));
 			GetShape(6)->setLocalPose(PxTransform(PxVec3(0.0f, 8.5f, 1.f)));
+
+			
+		}
+	};
+
+	class TrebuchetArm : public DynamicActor
+	{
+	public:
+		TrebuchetArm(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(0.5f, 0.5f, 0.5f), PxReal density = 1.f)
+			: DynamicActor(pose)
+		{
+			CreateShape(PxBoxGeometry(PxVec3(8.5f, .5f, .5f)), 0.25f);//Main arm
+			CreateShape(PxBoxGeometry(PxVec3(1.5f, 1.6f, .1f)), 0.25f);//Base of Box
+			CreateShape(PxBoxGeometry(PxVec3(1.5f, .7, .1f)), 0.25f);//Back of Box
+			
+			GetShape(1)->setLocalPose(PxTransform(PxVec3(7.5f, .5f, .0f), PxQuat(PxPi / 2, PxVec3(1.f, 0.f, 0.f))));
+			GetShape(2)->setLocalPose(PxTransform(PxVec3(9.f, 1.f, .0f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
+			
+
+		}
+	};
+
+	class FullTreb {
+	public:
+
+		TrebuchetArm* Fullarm;
+		Trebuchet* Mainframe;
+		FullTreb(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(0.5f, 0.5f, 0.5f))
+		{
+			Fullarm = new TrebuchetArm(PxTransform(PxVec3(0.f, 0.f, 0.f), PxQuat(PxPi / 2, PxVec3(1.f, 0.f, 0.f))));
+			Mainframe = new Trebuchet(PxTransform(PxVec3(-20.f, 1.f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
 
 
 		}
@@ -107,7 +141,7 @@ namespace PhysicsEngine
 		// - pose in 0,0,0
 		// - dimensions: 1m x 1m x 1m
 		// - denisty: 1kg/m^3
-		Base(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(.1f, .1f, .1f), PxReal density = 1.f)
+		Base(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(.1f, .1f, .1f), PxReal density = 100.f)
 			: DynamicActor(pose)
 		{
 			CreateShape(PxBoxGeometry(dimensions), density);
@@ -121,7 +155,9 @@ namespace PhysicsEngine
 		// - pose in 0,0,0
 		// - dimensions: 1m x 1m x 1m
 		// - denisty: 1kg/m^3
-		Boxx(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(.5f, .5f, .5f), PxReal density = 1.f)
+		PxReal* increase;
+
+		Boxx(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(.5f, .5f, .5f), PxReal density = 1.0f)
 			: StaticActor(pose)
 		{
 			CreateShape(PxBoxGeometry(dimensions), density);
@@ -138,6 +174,7 @@ namespace PhysicsEngine
 		}
 	};
 
+	
 	///The ConvexMesh class
 	class ConvexMesh : public DynamicActor
 	{
