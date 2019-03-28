@@ -56,9 +56,54 @@ namespace PhysicsEngine
 	};
 
 	class Catapult : public StaticActor {
+	public:
+		Catapult(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(0.5f, 0.5f, 0.5f), PxReal density = 1.0f)
+			: StaticActor(pose) 
+		{
+			CreateShape(PxBoxGeometry(3.5f,1.f,1.f), density);
+			CreateShape(PxBoxGeometry(3.5f, 1.f, 1.f), density);
+			CreateShape(PxBoxGeometry(3.5f, 1.f, 1.f), density);
+			CreateShape(PxBoxGeometry(3.5f, 1.f, 1.f), density);
 
+			GetShape(0)->setLocalPose(PxTransform(PxVec3(0.0f, 1.0f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
+			GetShape(1)->setLocalPose(PxTransform(PxVec3(8.0f, 1.0f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
+			GetShape(2)->setLocalPose(PxTransform(PxVec3(8.0f, 3.0f, 0.f), PxQuat(PxPi / 2, PxVec3(1.f, 0.f, 0.f))));
+			GetShape(3)->setLocalPose(PxTransform(PxVec3(0.0f, 3.0f, 0.f), PxQuat(PxPi / 2, PxVec3(1.f, 0.f, 0.f))));
+		}
 	};
 
+	class CatapultArm : public DynamicActor {
+	public:
+		CatapultArm(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(0.5f, 0.5f, 0.5f), PxReal density = 1.0f)
+			: DynamicActor(pose) {
+			CreateShape(PxBoxGeometry(PxVec3(7.5f, .5f, .5f)), 0.25f);//Main arm
+			CreateShape(PxBoxGeometry(PxVec3(1.5f, 1.6f, .1f)), 0.25f);//Base of Box
+			CreateShape(PxBoxGeometry(PxVec3(1.5f, .7, .1f)), 0.25f);//Back of Box
+			CreateShape(PxBoxGeometry(PxVec3(.1f, .7, 1.5f)), 0.25f);//right of Box
+			CreateShape(PxBoxGeometry(PxVec3(.1f, .7, 1.5f)), 0.25f);//left of Box
+
+
+			GetShape(1)->setLocalPose(PxTransform(PxVec3(6.5f, .5f, .0f), PxQuat(PxPi / 2, PxVec3(1.f, 0.f, 0.f))));
+			GetShape(2)->setLocalPose(PxTransform(PxVec3(8.f, 1.f, .0f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
+
+			GetShape(3)->setLocalPose(PxTransform(PxVec3(6.5f, 1.f, 1.5f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
+			GetShape(4)->setLocalPose(PxTransform(PxVec3(6.5f, 1.f, -1.5f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
+		}
+
+	};
+	class Cat {
+	public:
+		CatapultArm* catsarm;
+		Catapult* cats;
+		Cat(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(0.5f, 0.5f, 0.5f)) {
+
+			catsarm = new CatapultArm(PxTransform(PxVec3(0.f, 0.f, 0.f)));
+			cats = new Catapult(PxTransform(PxVec3(0.f, 0.f, 0.f)));
+
+
+		}
+
+	};
 	class Trebuchet : public DynamicActor
 	{
 	public:
@@ -109,12 +154,16 @@ namespace PhysicsEngine
 
 		TrebuchetArm* Fullarm;
 		Trebuchet* Mainframe;
+		Sphere* Ball;
 		FullTreb(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(0.5f, 0.5f, 0.5f))
 		{
 			Fullarm = new TrebuchetArm(PxTransform(PxVec3(0.f, 0.f, 0.f), PxQuat(PxPi / 2, PxVec3(1.f, 0.f, 0.f))));
 			Mainframe = new Trebuchet(PxTransform(PxVec3(-20.f, 1.f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
 
+			//counterJoint = new RevoluteJoint(trebarm, PxTransform(PxVec3(-8.0f, -1.0f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.0f, 0.f))), counterWeight, PxTransform(PxVec3(0.0f, .5f, 0.f)));
+			//counterJoint->SetLimits(-PxPi / 2, PxPi / 4);
 
+			//RevoluteJoint joint(Fullarm, PxTransform(PxVec3(-4.5f, 0.5f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, -1.0f, 0.f))), Mainframe, PxTransform(PxVec3(0.0f, 8.5f, 2.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
 		}
 	};
 

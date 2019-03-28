@@ -161,8 +161,10 @@ namespace PhysicsEngine
 		Box* upright, *upleft, * arm, * counterWeight;
 		Sphere* ball;
 		Base* base,* bracerleft;
-		RevoluteJoint* counterJoint;
+		RevoluteJoint* counterJoint,* catjoint;
 
+		CatapultArm* catarm;
+		Catapult* cat;
 		Trebuchet* treb;
 		GoalShape* test;
 		TrebuchetArm* trebarm;
@@ -226,8 +228,9 @@ namespace PhysicsEngine
 			//bracerleft = new Base(PxTransform(PxVec3(0.f, 2.5f, -1.f), PxQuat(PxPi / 2, PxVec3(0.f,1.f,0.f))));
 			//bracerright = new Boxx(PxTransform(PxVec3(0.0f, 1.5f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
 			
-			
-			Full[0] = new FullTreb(PxTransform(PxVec3(-20.f, 1.f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))));
+			catarm = new CatapultArm(PxTransform(PxVec3(30.f, 2.f, 0.f), PxQuat(PxPi / 2, (PxVec3(0.f, 1.f, 0.f)))));
+			cat = new Catapult(PxTransform(PxVec3(30.f, 0.f, 0.f)));
+			Full[0] = new FullTreb(PxTransform(PxVec3(-20.f, 1.f, 0.f), PxQuat(PxPi / 2, PxVec3(1.f, 0.f, 0.f))));
 
 			base->CreateShape(PxBoxGeometry(500.f, .1, 5.f), 3);
 			middle->CreateShape(PxBoxGeometry(1.5f, .5f, .5f), 3);
@@ -264,7 +267,10 @@ namespace PhysicsEngine
 			//Numbers are as follows First is Left Second is height, third is right
 			box2 = new Box(PxTransform(PxVec3(3.0f, 6.5f, .0f)));
 			box2->Color(color_palette[1]);
+			
 
+			catjoint = new RevoluteJoint(cat, PxTransform(PxVec3(.0f, 6.0f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.0f, 0.f))), catarm, PxTransform(PxVec3(1.0f, 0.0f, 0.f)));
+			//counterJoint->SetLimits(-PxPi / 2, PxPi / 4);
 			RevoluteJoint joint(trebarm, PxTransform(PxVec3(-4.5f, 0.5f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, -1.0f, 0.f))), treb, PxTransform(PxVec3(0.0f, 8.5f, 2.f), PxQuat(PxPi / 2, PxVec3(0.f,1.f,0.f))));
 
 			//RevoluteJoint joint(trebarm, PxTransform(PxVec3(1.0f, -8.f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.0f, 0.f))), treb, PxTransform(PxVec3(0.0f, .0f, 0.f)));
@@ -284,7 +290,6 @@ namespace PhysicsEngine
 			//Add(box);
 			//Add(box2);
 			Add(base);
-
 			Add(treb);
 			Add(trebarm);
 			//Add(middle);
@@ -297,7 +302,8 @@ namespace PhysicsEngine
 			Add(counterWeight);
 			//Add(arm);
 			Add(test);
-			
+			Add(catarm);
+			Add(cat);
 			//Add(bracerleft);
 			Add(ball);
 			//Add(post1);
@@ -321,6 +327,7 @@ namespace PhysicsEngine
 			ball->CreateShape(PxSphereGeometry(1), 0.1);
 			ball->Color(color_palette[5]);
 			Add(ball);
+			ball->SetTrigger(true);
 		}
 		//Custom udpate function
 		virtual void CustomUpdate() 
